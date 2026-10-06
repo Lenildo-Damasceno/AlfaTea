@@ -1,24 +1,35 @@
 {
   "expo": {
-    "name": "expo-bootstrap",
-    "slug": "expo-bootstrap",
+    "name": "Alfatea",
+    "slug": "alfatea",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+      "package": "com.alfatea.app"
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#F7FAFC",
+          "image": "./assets/images/alfi/alfi_ola.png",
+          "imageWidth": 180
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "O Alfatea consulta sua localização apenas quando você solicita recursos próximos, sem guardar sua posição.",
+          "isIosBackgroundLocationEnabled": false,
+          "isAndroidBackgroundLocationEnabled": false
+        }
+      ],
+      "expo-notifications"
+    ],
+    "icon": "./assets/images/branding/icone_alfatea.png"
   }
 }

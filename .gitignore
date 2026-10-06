@@ -30,8 +30,40 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
-.env*.local
+# Environment variables (only sanitized examples belong in Git)
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Local tools, editor settings and caches
+/.claude/
+/.codex/
+/.idea/
+/.vscode/
+.npm/
+.cache/
+coverage/
+*.log
+Thumbs.db
+Desktop.ini
+
+# Build artifacts and local signing credentials
+*.apk
+*.aab
+*.ipa
+*.keystore
+/credentials.json
+
+# Temporary files and local databases
+/tmp/
+/temp/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.db
+*.db-shm
+*.db-wal
 
 # typescript
 *.tsbuildinfo
