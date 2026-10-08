@@ -1,7 +1,2 @@
-import { SettingsProvider } from './src/contexts/SettingsContext';
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AppNavigator from './src/navigation/AppNavigator';
-export default function App() {
-  return <SafeAreaProvider><StatusBar style="dark" /><SettingsProvider><AppNavigator /></SettingsProvider></SafeAreaProvider>;
-}
+// A entrada fica em index.js; os provedores ficam no layout principal.
+export { default } from "./src/app/_layout";

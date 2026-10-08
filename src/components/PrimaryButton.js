@@ -1,9 +1,40 @@
-import { Pressable, Text, StyleSheet } from 'react-native';
-import { COLORS } from '../constants/theme';
-export default function PrimaryButton({ title, onPress }) {
-  return <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => [styles.button, pressed && { opacity: 0.8 }]}><Text style={styles.text}>{title}</Text></Pressable>;
+import { Pressable, Text, StyleSheet } from "react-native";
+import { CORES } from "../constants/theme";
+
+// Exibe um botao acessivel e executa a acao recebida.
+export default function BotaoPrincipal({
+  title: titulo,
+  onPress: aoPressionar,
+  corFundo = CORES.primaria,
+}) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={aoPressionar}
+      style={({ pressed: pressionado }) => [
+        estilos.botao,
+        { backgroundColor: corFundo },
+        pressionado && {
+          opacity: 0.8,
+        },
+      ]}
+    >
+      <Text style={estilos.texto}>{titulo}</Text>
+    </Pressable>
+  );
 }
-const styles = StyleSheet.create({
-  button: { backgroundColor: COLORS.primary, borderRadius: 16, padding: 18, minHeight: 56, alignItems: 'center' },
-  text: { color: COLORS.white, fontSize: 18, fontWeight: '700' },
+
+const estilos = StyleSheet.create({
+  botao: {
+    backgroundColor: CORES.primaria,
+    borderRadius: 16,
+    padding: 18,
+    minHeight: 56,
+    alignItems: "center",
+  },
+  texto: {
+    color: CORES.branco,
+    fontSize: 18,
+    fontWeight: "700",
+  },
 });

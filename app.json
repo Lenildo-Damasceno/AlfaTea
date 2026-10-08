@@ -28,8 +28,10 @@
           "isAndroidBackgroundLocationEnabled": false
         }
       ],
-      "expo-notifications"
+      "expo-notifications",
+      "expo-router"
     ],
-    "icon": "./assets/images/branding/icone_alfatea.png"
+    "icon": "./assets/images/branding/icone_alfatea.png",
+    "scheme": "alfatea"
   }
 }
