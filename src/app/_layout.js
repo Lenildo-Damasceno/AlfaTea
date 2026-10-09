@@ -43,6 +43,14 @@ export default function LayoutPrincipal() {
             }}
           />
           <Stack.Screen
+            name="syllables/index"
+            options={{ title: "Sílabas" }}
+          />
+          <Stack.Screen
+            name="syllables/[letter]"
+            options={{ title: "Conhecer as sílabas" }}
+          />
+          <Stack.Screen
             name="module"
             options={{
               title: "Aprender",

@@ -1,22 +1,24 @@
 import { router } from "expo-router";
-import { Text } from "react-native";
+import { Image } from "react-native";
 import TelaBase from "../components/Screen";
 import MensagemAlfi from "../components/AlfiMessage";
 import BotaoPrincipal from "../components/PrimaryButton";
-import { CORES } from "../constants/theme";
 
 // Mostra as boas-vindas e o acesso aos modulos.
 export default function TelaInicio() {
   return (
     <TelaBase title="">
-      <Text
+      <Image
+        source={require("../../assets/images/branding/logo_alfatea.png")}
+        resizeMode="contain"
+        accessibilityLabel="Alfatea"
         style={{
-          color: CORES.texto,
-          fontSize: 18,
+          width: "100%",
+          maxWidth: 330,
+          height: 124,
+          alignSelf: "center",
         }}
-      >
-        Aprender no seu ritmo.
-      </Text>
+      />
       <MensagemAlfi>Olá! Vamos aprender?</MensagemAlfi>
       <BotaoPrincipal
         title="COMEÇAR"

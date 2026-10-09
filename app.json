@@ -29,7 +29,8 @@
         }
       ],
       "expo-notifications",
-      "expo-router"
+      "expo-router",
+      "expo-video"
     ],
     "icon": "./assets/images/branding/icone_alfatea.png",
     "scheme": "alfatea"

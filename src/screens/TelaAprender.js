@@ -14,6 +14,8 @@ export default function TelaAprender() {
             router.push(
               modulo === "Letras"
                 ? "/letters"
+                : modulo === "Sílabas"
+                  ? "/syllables"
                 : {
                     pathname: "/module",
                     params: {

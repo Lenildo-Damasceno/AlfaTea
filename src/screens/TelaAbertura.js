@@ -1,85 +1,94 @@
-import { router } from "expo-router";
-import { Image, Text, StyleSheet, ScrollView, View } from "react-native";
+import { useCallback, useRef, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useVideoPlayer, VideoView } from "expo-video";
+import { AppState, Platform, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BotaoPrincipal from "../components/PrimaryButton";
+import { useConfiguracoes } from "../contexts/SettingsContext";
 import { CORES } from "../constants/theme";
 
-// Apresenta o Alfatea e abre a tela inicial.
+// VideoPlayer é um controlador nativo mutável, não um estado React.
+function definirMudo(player, mudo) {
+  player.muted = mudo;
+}
+
+// Vídeo local: funciona sem internet e substitui a antiga apresentação.
 export default function TelaAbertura() {
+  const { configuracoes, carregado } = useConfiguracoes();
+  const saiu = useRef(false);
+  const [somWeb, definirSomWeb] = useState(false);
+  const player = useVideoPlayer(require("../../assets/videos/abertura.mp4"), (video) => {
+    video.loop = false;
+    video.muted = true;
+  });
+
+  const abrirInicio = useCallback(() => {
+    if (saiu.current) return;
+    saiu.current = true;
+    player.pause();
+    router.replace("/home");
+  }, [player]);
+
+  useFocusEffect(useCallback(() => {
+    saiu.current = false;
+    definirMudo(player, !carregado || !configuracoes.som || (Platform.OS === "web" && !somWeb));
+    const fim = player.addListener("playToEnd", abrirInicio);
+    const erro = player.addListener("statusChange", ({ status }) => {
+      if (status === "error") abrirInicio();
+    });
+    const estado = AppState.addEventListener("change", (valor) => {
+      if (saiu.current) return;
+      if (valor === "active") player.play();
+      else player.pause();
+    });
+    if (player.status === "error") abrirInicio();
+    else if (AppState.currentState !== "background") player.play();
+    return () => {
+      saiu.current = true;
+      fim.remove();
+      erro.remove();
+      estado.remove();
+      // useVideoPlayer libera o player ao desmontar. Não chamar métodos
+      // nativos aqui: essa liberação pode ocorrer antes deste cleanup.
+    };
+  }, [player, abrirInicio, carregado, configuracoes.som, somWeb]));
+
   return (
-    <SafeAreaView style={estilos.tela}>
-      <ScrollView contentContainerStyle={estilos.conteudo}>
-        <Image
-          source={require("../../assets/images/branding/logo_alfatea.png")}
-          style={estilos.logo}
-          resizeMode="contain"
-          accessibilityLabel="Alfatea"
+    <View style={estilos.tela}>
+      <View style={estilos.areaVideo}>
+        <VideoView
+          player={player}
+          style={estilos.video}
+          contentFit="cover"
+          nativeControls={false}
+          fullscreenOptions={{ enable: false }}
+          allowsPictureInPicture={false}
+          playsInline
+          accessibilityLabel="Vídeo de boas-vindas do Alfatea"
         />
-        <Text style={estilos.slogan}>Aprender no seu ritmo.</Text>
-        <Image
-          source={require("../../assets/images/alfi/alfi_ola.png")}
-          style={estilos.alfi}
-          resizeMode="contain"
-          accessibilityLabel="Alfi, um dinossauro azul sorridente, acena para você"
-        />
-        <Text style={estilos.titulo}>Olá! Vamos aprender?</Text>
-        <Text style={estilos.subtitulo}>
-          Um passo de cada vez, junto com o Alfi.
-        </Text>
-        <View style={estilos.botao}>
-          <BotaoPrincipal
-            title="COMEÇAR"
-            onPress={() => router.replace("/home")}
-          />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+      <SafeAreaView style={estilos.sobreposicao} pointerEvents="box-none">
+      <View style={estilos.acoes}>
+        <Text style={estilos.texto}>Alfatea — Aprender no seu ritmo.</Text>
+        {Platform.OS === "web" && carregado && configuracoes.som && !somWeb ? (
+          <BotaoPrincipal title="Ativar som" onPress={() => {
+            definirMudo(player, false);
+            player.play();
+            definirSomWeb(true);
+          }} />
+        ) : null}
+        <BotaoPrincipal title="Pular abertura" onPress={abrirInicio} />
+      </View>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const estilos = StyleSheet.create({
-  tela: {
-    flex: 1,
-    backgroundColor: CORES.fundo,
-  },
-  conteudo: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 24,
-    gap: 12,
-  },
-  logo: {
-    width: "100%",
-    maxWidth: 330,
-    height: 124,
-  },
-  slogan: {
-    fontSize: 18,
-    color: CORES.texto,
-    textAlign: "center",
-  },
-  alfi: {
-    width: "100%",
-    maxWidth: 330,
-    height: 300,
-    marginVertical: 12,
-  },
-  titulo: {
-    fontSize: 26,
-    color: CORES.primaria,
-    fontWeight: "800",
-    textAlign: "center",
-  },
-  subtitulo: {
-    fontSize: 17,
-    color: CORES.texto,
-    textAlign: "center",
-    lineHeight: 25,
-  },
-  botao: {
-    width: "100%",
-    maxWidth: 360,
-    marginTop: 16,
-  },
+  tela: { flex: 1, backgroundColor: CORES.fundo },
+  areaVideo: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0 },
+  video: { width: "100%", height: "100%" },
+  sobreposicao: { flex: 1, justifyContent: "flex-end" },
+  acoes: { padding: 24, gap: 16, width: "100%", maxWidth: 640, alignSelf: "center", backgroundColor: "rgba(0, 0, 0, 0.45)" },
+  texto: { fontSize: 18, color: CORES.branco, textAlign: "center" },
 });
