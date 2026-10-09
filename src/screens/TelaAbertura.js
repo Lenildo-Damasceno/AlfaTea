@@ -17,32 +17,33 @@ export default function TelaAbertura() {
   const { configuracoes, carregado } = useConfiguracoes();
   const saiu = useRef(false);
   const [somWeb, definirSomWeb] = useState(false);
+  const [videoFinalizado, definirVideoFinalizado] = useState(false);
   const player = useVideoPlayer(require("../../assets/videos/abertura.mp4"), (video) => {
     video.loop = false;
     video.muted = true;
   });
 
-  const abrirInicio = useCallback(() => {
-    if (saiu.current) return;
-    saiu.current = true;
+  const concluirVideo = useCallback(() => {
+    if (saiu.current || videoFinalizado) return;
+    definirVideoFinalizado(true);
     player.pause();
-    router.replace("/home");
-  }, [player]);
+  }, [player, videoFinalizado]);
 
   useFocusEffect(useCallback(() => {
     saiu.current = false;
+    definirVideoFinalizado(false);
     definirMudo(player, !carregado || !configuracoes.som || (Platform.OS === "web" && !somWeb));
-    const fim = player.addListener("playToEnd", abrirInicio);
+    const fim = player.addListener("playToEnd", concluirVideo);
     const erro = player.addListener("statusChange", ({ status }) => {
-      if (status === "error") abrirInicio();
+      if (status === "error") concluirVideo();
     });
     const estado = AppState.addEventListener("change", (valor) => {
       if (saiu.current) return;
-      if (valor === "active") player.play();
+      if (valor === "active" && !videoFinalizado) player.play();
       else player.pause();
     });
-    if (player.status === "error") abrirInicio();
-    else if (AppState.currentState !== "background") player.play();
+    if (player.status === "error") concluirVideo();
+    else if (AppState.currentState !== "background" && !videoFinalizado) player.play();
     return () => {
       saiu.current = true;
       fim.remove();
@@ -51,7 +52,7 @@ export default function TelaAbertura() {
       // useVideoPlayer libera o player ao desmontar. Não chamar métodos
       // nativos aqui: essa liberação pode ocorrer antes deste cleanup.
     };
-  }, [player, abrirInicio, carregado, configuracoes.som, somWeb]));
+  }, [player, concluirVideo, carregado, configuracoes.som, somWeb, videoFinalizado]));
 
   return (
     <View style={estilos.tela}>
@@ -77,7 +78,12 @@ export default function TelaAbertura() {
             definirSomWeb(true);
           }} />
         ) : null}
-        <BotaoPrincipal title="Pular abertura" onPress={abrirInicio} />
+        <BotaoPrincipal title="Login" onPress={() => router.push("/login")} />
+        <BotaoPrincipal
+          title="Se cadastrar"
+          corFundo={CORES.secundaria}
+          onPress={() => router.push("/login?modo=signup")}
+        />
       </View>
       </SafeAreaView>
     </View>

@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { notificacoesDisponiveis } from "../services/notifications";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -12,10 +12,12 @@ import {
 import TelaBase from "../components/Screen";
 import BotaoPrincipal from "../components/PrimaryButton";
 import { useConfiguracoes } from "../contexts/SettingsContext";
+import { useAuth } from "../contexts/AuthContext";
 import { CORES } from "../constants/theme";
 
 // Permite ajustar as preferencias do aplicativo.
 export default function TelaConfiguracoes() {
+  const [saindo, definirSaindo] = useState(false);
   const {
     configuracoes,
     carregado,
@@ -28,6 +30,28 @@ export default function TelaConfiguracoes() {
     consultarLembrete,
     emitirFeedback,
   } = useConfiguracoes();
+  const { usuario, sair } = useAuth();
+
+  async function confirmarSaida() {
+    Alert.alert("Sair da conta", "Deseja encerrar sua sessão neste dispositivo?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Sair",
+        style: "destructive",
+        onPress: async () => {
+          definirSaindo(true);
+          try {
+            await sair();
+            router.replace("/");
+          } catch (erroCapturado) {
+            mostrarErro(erroCapturado);
+          } finally {
+            definirSaindo(false);
+          }
+        },
+      },
+    ]);
+  }
 
   // Mostra uma mensagem quando uma acao falha.
   const mostrarErro = (erroCapturado) =>
@@ -61,9 +85,31 @@ export default function TelaConfiguracoes() {
       >
         Preferências do responsável
       </Text>
+      <View
+        style={{
+          borderWidth: 1,
+          borderColor: "#C9D7E4",
+          borderRadius: 12,
+          padding: 12,
+          backgroundColor: CORES.branco,
+        }}
+      >
+        <Text style={{ color: CORES.texto, fontWeight: "700", marginBottom: 4 }}>
+          Conta conectada
+        </Text>
+        <Text style={{ color: CORES.texto }}>
+          {usuario?.email || "Sem email disponível"}
+        </Text>
+      </View>
       {!carregado || ocupado ? (
         <ActivityIndicator
           accessibilityLabel="Carregando preferências"
+          color={CORES.primaria}
+        />
+      ) : null}
+      {saindo ? (
+        <ActivityIndicator
+          accessibilityLabel="Encerrando sessão"
           color={CORES.primaria}
         />
       ) : null}
@@ -145,6 +191,11 @@ export default function TelaConfiguracoes() {
       <BotaoPrincipal
         title="Sobre o Alfatea"
         onPress={() => router.push("/about")}
+      />
+      <BotaoPrincipal
+        title="Sair da conta"
+        corFundo={CORES.erro}
+        onPress={confirmarSaida}
       />
     </TelaBase>
   );

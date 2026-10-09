@@ -1,11 +1,16 @@
 import { router } from "expo-router";
 import { Image } from "react-native";
+import { useContext } from "react";
 import TelaBase from "../components/Screen";
 import MensagemAlfi from "../components/AlfiMessage";
 import BotaoPrincipal from "../components/PrimaryButton";
+import { AuthContext } from "../contexts/AuthContext";
 
 // Mostra as boas-vindas e o acesso aos modulos.
 export default function TelaInicio() {
+  const { user } = useContext(AuthContext);
+  const userName = user?.user_metadata?.nome || user?.email || "Usuário";
+
   return (
     <TelaBase title="">
       <Image
@@ -19,7 +24,7 @@ export default function TelaInicio() {
           alignSelf: "center",
         }}
       />
-      <MensagemAlfi>Olá! Vamos aprender?</MensagemAlfi>
+      <MensagemAlfi>Olá {userName}! Vamos aprender?</MensagemAlfi>
       <BotaoPrincipal
         title="COMEÇAR"
         onPress={() => router.navigate("/learn")}

@@ -1,6 +1,7 @@
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import { Text } from "react-native";
 import { CORES } from "../../constants/theme";
+import { useAuth } from "../../contexts/AuthContext";
 const icones = {
   home: "⌂",
   learn: "ABC",
@@ -10,6 +11,11 @@ const icones = {
 
 // Organiza as quatro abas principais do aplicativo.
 export default function LayoutAbas() {
+  const { carregandoAuth, usuario } = useAuth();
+
+  if (carregandoAuth) return null;
+  if (!usuario) return <Redirect href="/login" />;
+
   return (
     <Tabs
       initialRouteName="home"
