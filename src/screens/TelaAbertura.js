@@ -20,7 +20,7 @@ export default function TelaAbertura() {
   const [videoFinalizado, definirVideoFinalizado] = useState(false);
   const player = useVideoPlayer(require("../../assets/videos/abertura.mp4"), (video) => {
     video.loop = false;
-    video.muted = true;
+    video.muted = Platform.OS === "web";
   });
 
   const concluirVideo = useCallback(() => {
