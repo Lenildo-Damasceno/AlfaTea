@@ -67,13 +67,19 @@ export default function TelaLogin() {
             idade: Number.parseInt(idade.trim(), 10),
           },
         );
-        if (!resposta.session) {
+
+        const precisaConfirmarEmail =
+          !resposta?.session || !resposta?.user?.email_confirmed_at;
+
+        if (precisaConfirmarEmail) {
           Alert.alert(
-            "Quase pronto",
-            "Verifique seu email para confirmar a conta antes de entrar.",
+            "Confirme seu e-mail",
+            "Verifique sua caixa de entrada e confirme o e-mail antes de entrar.",
           );
           definirNome("");
           definirIdade("");
+          definirEmail("");
+          definirSenha("");
           definirModo("login");
         }
       }

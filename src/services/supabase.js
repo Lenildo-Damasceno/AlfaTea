@@ -20,7 +20,7 @@ export const supabase = createClient(
       ...(Platform.OS !== "web" ? { storage: AsyncStorage } : {}),
       autoRefreshToken: true,
       persistSession: true,
-      detectSessionInUrl: false,
+      detectSessionInUrl: true,
     },
   },
 );

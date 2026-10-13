@@ -47,10 +47,16 @@ export function ProvedorAuth({ children: conteudo }) {
   }
 
   async function cadastrarComEmailSenha(email, senha, perfil = {}) {
+    const redirectParaConfirmacao =
+      process.env.EXPO_PUBLIC_AUTH_CONFIRMATION_URL ||
+      process.env.EXPO_PUBLIC_AUTH_REDIRECT_URL ||
+      "alfatea://auth/callback";
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password: senha,
       options: {
+        emailRedirectTo: redirectParaConfirmacao,
         data: {
           nome: perfil.nome || "",
           idade: Number.isFinite(perfil.idade) ? perfil.idade : null,

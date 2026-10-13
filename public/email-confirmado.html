@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-mail confirmado</title>
+    <style>
+      :root {
+        --fundo: #f7fafc;
+        --card: #ffffff;
+        --texto: #1f2a37;
+        --primaria: #4f46e5;
+        --secundaria: #eef2ff;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg, var(--fundo), #edf4ff);
+        color: var(--texto);
+      }
+
+      .card {
+        width: min(92vw, 420px);
+        background: var(--card);
+        border-radius: 20px;
+        box-shadow: 0 12px 30px rgba(79, 70, 229, 0.12);
+        padding: 32px 24px;
+        text-align: center;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: var(--secundaria);
+        color: var(--primaria);
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: 2rem;
+      }
+
+      p {
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <div class="badge">Tudo certo</div>
+      <h1>E-mail confirmado!</h1>
+      <p>Seu cadastro foi concluído. Você pode voltar ao app.</p>
+    </main>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const destino = params.get("returnTo") || "alfatea://auth/callback";
+      setTimeout(() => {
+        window.location.href = destino;
+      }, 1800);
+    </script>
+  </body>
+</html>

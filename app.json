@@ -9,7 +9,11 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.alfatea.app"
+      "package": "com.alfatea.app",
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "plugins": [
       [
@@ -33,6 +37,12 @@
       "expo-video"
     ],
     "icon": "./assets/images/branding/icone_alfatea.png",
-    "scheme": "alfatea"
+    "scheme": "alfatea",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2fcb4a25-67a4-4e68-ac7c-2b884d3c82bb"
+      }
+    }
   }
 }
