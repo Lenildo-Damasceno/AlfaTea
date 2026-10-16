@@ -7,10 +7,13 @@ import { CORES, CORES_LETRAS } from "../constants/theme";
 import { useConfiguracoes } from "../contexts/SettingsContext";
 import { useVoz } from "../hooks/useVoz";
 import { NOMES_LETRAS } from "../data/nomesLetras";
+import { useRegistrarVisita } from "../hooks/useRegistrarVisita";
+import EstadoAprendizagem from "../components/LearningStatus";
 
 // Apresenta a letra, uma palavra de exemplo e os controles de avancar e voltar.
 export default function TelaLetra() {
   const { letter: letra } = useLocalSearchParams();
+  useRegistrarVisita("letras", letra);
   const { configuracoes, carregado, emitirFeedback } = useConfiguracoes();
   const { falar, mensagemVoz } = useVoz(carregado && configuracoes.som, letra);
   const item = ALFABETO.find((entrada) => entrada.letra === letra);
@@ -45,6 +48,7 @@ export default function TelaLetra() {
     });
   return (
     <TelaBase title={`Letra ${item.letra}`}>
+      <EstadoAprendizagem />
       <Text style={estilos.instrucao}>
         {podeOuvir ? "Toque na letra para ouvir seu nome." : "Veja a letra e uma palavra que começa com ela."}
       </Text>

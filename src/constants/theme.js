@@ -1,10 +1,10 @@
 export const CORES = {
-  primaria: "#2878D0",
-  secundaria: "#43A86B",
+  primaria: "#1764B3",
+  secundaria: "#237C4A",
   destaque: "#F5C84C",
   fundo: "#F7FAFC",
   texto: "#243447",
-  erro: "#D95C5C",
+  erro: "#B43B48",
   branco: "#FFFFFF",
 };
 export const ESPACAMENTOS = {

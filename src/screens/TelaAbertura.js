@@ -1,10 +1,11 @@
 import { useCallback, useRef, useState } from "react";
 import { router, useFocusEffect } from "expo-router";
 import { useVideoPlayer, VideoView } from "expo-video";
-import { AppState, Platform, StyleSheet, Text, View } from "react-native";
+import { AppState, Image, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BotaoPrincipal from "../components/PrimaryButton";
 import { useConfiguracoes } from "../contexts/SettingsContext";
+import { useAuth } from "../contexts/AuthContext";
 import { CORES } from "../constants/theme";
 
 // VideoPlayer é um controlador nativo mutável, não um estado React.
@@ -14,6 +15,34 @@ function definirMudo(player, mudo) {
 
 // Vídeo local: funciona sem internet e substitui a antiga apresentação.
 export default function TelaAbertura() {
+  const { configuracoes, carregado, reduzirMovimento } = useConfiguracoes();
+  const [pulou, definirPulou] = useState(false);
+  if (!carregado || configuracoes.pularAbertura || reduzirMovimento || pulou) {
+    return <SafeAreaView style={estilos.tela}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
+      <Image source={require("../../assets/images/alfi/alfi_ola.png")} resizeMode="contain"
+        accessibilityLabel="Alfi dá as boas-vindas" style={{ width: "100%", height: 300 }} />
+      <View style={estilos.acoes}>
+        <Text style={estilos.texto}>Alfatea — Aprender no seu ritmo.</Text>
+        <AcoesDaConta />
+      </View>
+      </ScrollView>
+    </SafeAreaView>;
+  }
+  return <AberturaComVideo aoPular={() => definirPulou(true)} />;
+}
+
+function AcoesDaConta() {
+  const { usuario, carregandoAuth } = useAuth();
+  return <>
+    <BotaoPrincipal title={carregandoAuth ? "Carregando conta..." : usuario ? "Continuar" : "Login"}
+      loading={carregandoAuth} onPress={() => usuario ? router.replace("/home") : router.push("/login")} />
+    {!carregandoAuth && !usuario ? <BotaoPrincipal title="Se cadastrar" corFundo={CORES.secundaria}
+      onPress={() => router.push("/login?modo=signup")} /> : null}
+  </>;
+}
+
+function AberturaComVideo({ aoPular }) {
   const { configuracoes, carregado } = useConfiguracoes();
   const saiu = useRef(false);
   const [somWeb, definirSomWeb] = useState(false);
@@ -69,6 +98,7 @@ export default function TelaAbertura() {
         />
       </View>
       <SafeAreaView style={estilos.sobreposicao} pointerEvents="box-none">
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end" }}>
       <View style={estilos.acoes}>
         <Text style={estilos.texto}>Alfatea — Aprender no seu ritmo.</Text>
         {Platform.OS === "web" && carregado && configuracoes.som && !somWeb ? (
@@ -78,13 +108,10 @@ export default function TelaAbertura() {
             definirSomWeb(true);
           }} />
         ) : null}
-        <BotaoPrincipal title="Login" onPress={() => router.push("/login")} />
-        <BotaoPrincipal
-          title="Se cadastrar"
-          corFundo={CORES.secundaria}
-          onPress={() => router.push("/login?modo=signup")}
-        />
+        <AcoesDaConta />
+        <BotaoPrincipal title="Pular apresentação" onPress={aoPular} />
       </View>
+      </ScrollView>
       </SafeAreaView>
     </View>
   );

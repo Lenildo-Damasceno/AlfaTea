@@ -4,7 +4,7 @@ export const ALFABETO = [
   ["C", "CASA", "🏠"],
   ["D", "DADO", "🎲"],
   ["E", "ESTRELA", "⭐"],
-  ["F", "FACA", "🔪"],
+  ["F", "FOCA", "🐬"],
   ["G", "GATO", "🐱"],
   ["H", "HELICÓPTERO", "🚁"],
   ["I", "ILHA", "🏝️"],

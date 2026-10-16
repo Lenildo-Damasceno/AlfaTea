@@ -4,16 +4,17 @@ import { CORES } from "../../constants/theme";
 import { useAuth } from "../../contexts/AuthContext";
 const icones = {
   home: "⌂",
-  learn: "ABC",
+  "(learning)": "ABC",
   progress: "☆",
   settings: "⚙",
 };
 
 // Organiza as quatro abas principais do aplicativo.
 export default function LayoutAbas() {
-  const { carregandoAuth, usuario } = useAuth();
+  const { carregandoAuth, usuario, recuperandoSenha, processandoLink } = useAuth();
 
-  if (carregandoAuth) return null;
+  if (carregandoAuth || processandoLink) return null;
+  if (recuperandoSenha) return <Redirect href="/auth/reset-password" />;
   if (!usuario) return <Redirect href="/login" />;
 
   return (
@@ -32,7 +33,7 @@ export default function LayoutAbas() {
             accessible={false}
             style={{
               color: cor,
-              fontSize: rota.name === "learn" ? 13 : 24,
+              fontSize: rota.name === "(learning)" ? 13 : 24,
             }}
           >
             {icones[rota.name]}
@@ -47,9 +48,10 @@ export default function LayoutAbas() {
         }}
       />
       <Tabs.Screen
-        name="learn"
+        name="(learning)"
         options={{
           title: "Aprender",
+          headerShown: false,
         }}
       />
       <Tabs.Screen

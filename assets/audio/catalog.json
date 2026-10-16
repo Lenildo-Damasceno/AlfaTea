@@ -1,0 +1,187 @@
+{
+  "voz": "Microsoft Maria Desktop",
+  "idioma": "pt-BR",
+  "formato": "PCM WAV mono 24kHz 16bit",
+  "gravacoes": [
+    {
+      "id": "letra-a",
+      "texto": "á",
+      "revisado": false
+    },
+    {
+      "id": "letra-b",
+      "texto": "bê",
+      "revisado": false
+    },
+    {
+      "id": "letra-c",
+      "texto": "cê",
+      "revisado": false
+    },
+    {
+      "id": "letra-d",
+      "texto": "dê",
+      "revisado": false
+    },
+    {
+      "id": "letra-e",
+      "texto": "é",
+      "revisado": false
+    },
+    {
+      "id": "letra-f",
+      "texto": "efe",
+      "revisado": false
+    },
+    {
+      "id": "letra-g",
+      "texto": "gê",
+      "revisado": false
+    },
+    {
+      "id": "letra-h",
+      "texto": "agá",
+      "revisado": false
+    },
+    {
+      "id": "letra-i",
+      "texto": "i",
+      "revisado": false
+    },
+    {
+      "id": "letra-j",
+      "texto": "jota",
+      "revisado": false
+    },
+    {
+      "id": "letra-k",
+      "texto": "cá",
+      "revisado": false
+    },
+    {
+      "id": "letra-l",
+      "texto": "ele",
+      "revisado": false
+    },
+    {
+      "id": "letra-m",
+      "texto": "eme",
+      "revisado": false
+    },
+    {
+      "id": "letra-n",
+      "texto": "ene",
+      "revisado": false
+    },
+    {
+      "id": "letra-o",
+      "texto": "ó",
+      "revisado": false
+    },
+    {
+      "id": "letra-p",
+      "texto": "pê",
+      "revisado": false
+    },
+    {
+      "id": "letra-q",
+      "texto": "quê",
+      "revisado": false
+    },
+    {
+      "id": "letra-r",
+      "texto": "erre",
+      "revisado": false
+    },
+    {
+      "id": "letra-s",
+      "texto": "esse",
+      "revisado": false
+    },
+    {
+      "id": "letra-t",
+      "texto": "tê",
+      "revisado": false
+    },
+    {
+      "id": "letra-u",
+      "texto": "u",
+      "revisado": false
+    },
+    {
+      "id": "letra-v",
+      "texto": "vê",
+      "revisado": false
+    },
+    {
+      "id": "letra-w",
+      "texto": "dáblio",
+      "revisado": false
+    },
+    {
+      "id": "letra-x",
+      "texto": "xis",
+      "revisado": false
+    },
+    {
+      "id": "letra-y",
+      "texto": "ípsilon",
+      "revisado": false
+    },
+    {
+      "id": "letra-z",
+      "texto": "zê",
+      "revisado": false
+    },
+    {
+      "id": "exemplo-a",
+      "texto": "á de abelha",
+      "revisado": false
+    },
+    {
+      "id": "palavra-a",
+      "texto": "abelha",
+      "revisado": false
+    },
+    {
+      "id": "exemplo-e",
+      "texto": "é de estrela",
+      "revisado": false
+    },
+    {
+      "id": "palavra-e",
+      "texto": "estrela",
+      "revisado": false
+    },
+    {
+      "id": "exemplo-i",
+      "texto": "i de ilha",
+      "revisado": false
+    },
+    {
+      "id": "palavra-i",
+      "texto": "ilha",
+      "revisado": false
+    },
+    {
+      "id": "exemplo-o",
+      "texto": "ó de ovo",
+      "revisado": false
+    },
+    {
+      "id": "palavra-o",
+      "texto": "ovo",
+      "revisado": false
+    },
+    {
+      "id": "exemplo-u",
+      "texto": "u de uva",
+      "revisado": false
+    },
+    {
+      "id": "palavra-u",
+      "texto": "uva",
+      "revisado": false
+    }
+  ]
+}

@@ -6,9 +6,12 @@ import { PALAVRAS_SILABAS } from "../data/silabas";
 import { CORES, CORES_LETRAS } from "../constants/theme";
 import { useConfiguracoes } from "../contexts/SettingsContext";
 import { useVoz } from "../hooks/useVoz";
+import { useRegistrarVisita } from "../hooks/useRegistrarVisita";
+import EstadoAprendizagem from "../components/LearningStatus";
 
 export default function TelaSilaba() {
   const { letter: letra } = useLocalSearchParams();
+  useRegistrarVisita("silabas", letra);
   const { configuracoes, carregado, emitirFeedback } = useConfiguracoes();
   const podeOuvir = carregado && configuracoes.som;
   const { falar, mensagemVoz } = useVoz(podeOuvir, letra);
@@ -34,6 +37,7 @@ export default function TelaSilaba() {
 
   return (
     <TelaBase title="Uma palavra, várias partes">
+      <EstadoAprendizagem />
       <Text style={estilos.instrucao}>{podeOuvir ? "Toque em cada sílaba para ouvir." : "Observe as partes que formam a palavra."}</Text>
       <View style={estilos.cartao}>
         <Text style={estilos.emoji} accessible={false}>{item.emoji}</Text>

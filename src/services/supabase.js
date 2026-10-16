@@ -20,7 +20,8 @@ export const supabase = createClient(
       ...(Platform.OS !== "web" ? { storage: AsyncStorage } : {}),
       autoRefreshToken: true,
       persistSession: true,
-      detectSessionInUrl: true,
+      // Os links são consumidos pelo AuthContext nas duas plataformas.
+      detectSessionInUrl: false,
     },
   },
 );

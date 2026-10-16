@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import {
-  ActivityIndicator,
   Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -14,6 +14,7 @@ import {
 import BotaoPrincipal from "../components/PrimaryButton";
 import { CORES, RAIOS } from "../constants/theme";
 import { useAuth } from "../contexts/AuthContext";
+import { mensagemAuth } from "../services/authLinks";
 
 export default function TelaLogin() {
   const { modo: modoParam } = useLocalSearchParams();
@@ -24,8 +25,10 @@ export default function TelaLogin() {
   const [email, definirEmail] = useState("");
   const [senha, definirSenha] = useState("");
   const [carregando, definirCarregando] = useState(false);
+  const [mostrarSenha, definirMostrarSenha] = useState(false);
+  const bloqueio = useRef(false);
 
-  const { usuario, entrarComEmailSenha, cadastrarComEmailSenha } = useAuth();
+  const { usuario, entrarComEmailSenha, cadastrarComEmailSenha, recuperandoSenha, processandoLink, carregandoAuth } = useAuth();
 
   const titulo = useMemo(
     () => (modo === "login" ? "Entrar na conta" : "Criar conta"),
@@ -33,16 +36,23 @@ export default function TelaLogin() {
   );
 
   useEffect(() => {
-    if (usuario) router.replace("/home");
-  }, [usuario]);
+    if (carregandoAuth || processandoLink) return;
+    if (recuperandoSenha) router.replace("/auth/reset-password");
+    else if (usuario) router.replace("/home");
+  }, [usuario, recuperandoSenha, processandoLink, carregandoAuth]);
 
   async function enviar() {
+    if (bloqueio.current) return;
     if (!email.trim() || !senha.trim()) {
       Alert.alert("Preencha tudo", "Informe email e senha para continuar.");
       return;
     }
 
     if (modo === "signup") {
+      if (senha.length < 8) {
+        Alert.alert("Escolha uma senha mais forte", "Use pelo menos 8 caracteres.");
+        return;
+      }
       const idadeNumerica = Number.parseInt(idade.trim(), 10);
       if (!nome.trim() || !idade.trim()) {
         Alert.alert("Preencha tudo", "Informe nome e idade para criar a conta.");
@@ -54,6 +64,7 @@ export default function TelaLogin() {
       }
     }
 
+    bloqueio.current = true;
     definirCarregando(true);
     try {
       if (modo === "login") {
@@ -84,9 +95,10 @@ export default function TelaLogin() {
         }
       }
     } catch (error) {
-      Alert.alert("Falha na autenticação", error?.message || "Tente novamente.");
+      Alert.alert("Falha na autenticação", mensagemAuth(error));
     } finally {
       definirCarregando(false);
+      bloqueio.current = false;
     }
   }
 
@@ -95,6 +107,7 @@ export default function TelaLogin() {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       style={estilos.tela}
     >
+      <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}>
       <View style={estilos.cartao}>
         <Text style={estilos.titulo}>{titulo}</Text>
         <Text style={estilos.subtitulo}>
@@ -109,6 +122,8 @@ export default function TelaLogin() {
             <TextInput
               style={estilos.input}
               value={nome}
+              editable={!carregando}
+              accessibilityLabel="Nome do responsável"
               onChangeText={definirNome}
               autoCapitalize="words"
               autoComplete="name"
@@ -119,6 +134,8 @@ export default function TelaLogin() {
             <TextInput
               style={estilos.input}
               value={idade}
+              editable={!carregando}
+              accessibilityLabel="Idade do responsável"
               onChangeText={definirIdade}
               keyboardType="number-pad"
               inputMode="numeric"
@@ -133,6 +150,8 @@ export default function TelaLogin() {
         <TextInput
           style={estilos.input}
           value={email}
+          editable={!carregando}
+          accessibilityLabel="E-mail da conta"
           onChangeText={definirEmail}
           autoCapitalize="none"
           keyboardType="email-address"
@@ -144,23 +163,35 @@ export default function TelaLogin() {
         <TextInput
           style={estilos.input}
           value={senha}
+          editable={!carregando}
+          accessibilityLabel="Senha"
           onChangeText={definirSenha}
           autoCapitalize="none"
-          secureTextEntry
+          secureTextEntry={!mostrarSenha}
+          autoCorrect={false}
           autoComplete={modo === "login" ? "current-password" : "new-password"}
           placeholder="Sua senha"
         />
 
+        <Pressable accessibilityRole="button" disabled={carregando} onPress={() => definirMostrarSenha(!mostrarSenha)} style={estilos.acaoTexto}>
+          <Text style={estilos.link}>{mostrarSenha ? "Ocultar senha" : "Mostrar senha"}</Text>
+        </Pressable>
+        {modo === "login" ? <Pressable accessibilityRole="button" disabled={carregando}
+          onPress={() => router.push("/forgot-password")} style={estilos.acaoTexto}>
+          <Text style={estilos.link}>Esqueci minha senha</Text>
+        </Pressable> : null}
+
         <BotaoPrincipal
           title={modo === "login" ? "Entrar" : "Criar conta"}
           onPress={enviar}
+          loading={carregando}
+          disabled={carregandoAuth || processandoLink}
         />
 
-        {carregando ? (
-          <ActivityIndicator color={CORES.primaria} style={estilos.loader} />
-        ) : null}
-
         <Pressable
+          accessibilityRole="button"
+          disabled={carregando}
+          style={estilos.acaoTexto}
           onPress={() => {
             definirModo((atual) => (atual === "login" ? "signup" : "login"));
             definirSenha("");
@@ -173,6 +204,7 @@ export default function TelaLogin() {
           </Text>
         </Pressable>
       </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
@@ -223,7 +255,5 @@ const estilos = StyleSheet.create({
     fontSize: 15,
     marginTop: 4,
   },
-  loader: {
-    marginTop: 4,
-  },
+  acaoTexto: { minHeight: 48, justifyContent: "center" },
 });

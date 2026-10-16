@@ -1,15 +1,14 @@
 import { router } from "expo-router";
 import { Image } from "react-native";
-import { useContext } from "react";
 import TelaBase from "../components/Screen";
 import MensagemAlfi from "../components/AlfiMessage";
 import BotaoPrincipal from "../components/PrimaryButton";
-import { AuthContext } from "../contexts/AuthContext";
+import { useAprendizagem } from "../contexts/LearningContext";
+import EstadoAprendizagem from "../components/LearningStatus";
 
 // Mostra as boas-vindas e o acesso aos modulos.
 export default function TelaInicio() {
-  const { user } = useContext(AuthContext);
-  const userName = user?.user_metadata?.nome || user?.email || "Usuário";
+  const { perfil, progresso, carregado } = useAprendizagem();
 
   return (
     <TelaBase title="">
@@ -24,9 +23,11 @@ export default function TelaInicio() {
           alignSelf: "center",
         }}
       />
-      <MensagemAlfi>Olá {userName}! Vamos aprender?</MensagemAlfi>
+      <MensagemAlfi>{carregado && perfil.apelido ? `Olá, ${perfil.apelido}! Vamos aprender?` : "Olá! Vamos aprender?"}</MensagemAlfi>
+      <EstadoAprendizagem />
       <BotaoPrincipal
-        title="COMEÇAR"
+        title={!carregado ? "Carregando..." : progresso.ultima ? "Continuar" : "Começar"}
+        loading={!carregado}
         onPress={() => router.navigate("/learn")}
       />
     </TelaBase>

@@ -26,6 +26,8 @@ export default function TelaConfiguracoes() {
     notificacoes,
     atualizarVibracao,
     atualizarSom,
+    atualizarPreferencia,
+    movimentoReduzidoSistema,
     atualizarLembrete,
     consultarLembrete,
     emitirFeedback,
@@ -181,6 +183,23 @@ export default function TelaConfiguracoes() {
         Você pode desativá-lo quando quiser.
       </Text>
       <BotaoPrincipal
+        title="Perfis de aprendizagem"
+        onPress={() => router.push("/profile")}
+      />
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+        <Text style={{ flex: 1 }}>Pular vídeo de abertura</Text>
+        <Switch accessibilityLabel="Pular vídeo de abertura" value={configuracoes.pularAbertura}
+          disabled={!carregado || ocupado}
+          onValueChange={(valor) => atualizarPreferencia("pularAbertura", valor).catch(mostrarErro)} />
+      </View>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+        <Text style={{ flex: 1 }}>Reduzir animações</Text>
+        <Switch accessibilityLabel="Reduzir animações" value={configuracoes.reduzirMovimento || movimentoReduzidoSistema}
+          disabled={!carregado || ocupado || movimentoReduzidoSistema}
+          onValueChange={(valor) => atualizarPreferencia("reduzirMovimento", valor).catch(mostrarErro)} />
+      </View>
+      {movimentoReduzidoSistema ? <Text>O celular está configurado para reduzir movimento. O Alfatea respeita essa preferência.</Text> : null}
+      <BotaoPrincipal
         title="Informações do dispositivo"
         onPress={() => router.push("/device")}
       />
@@ -195,6 +214,7 @@ export default function TelaConfiguracoes() {
       <BotaoPrincipal
         title="Sair da conta"
         corFundo={CORES.erro}
+        loading={saindo}
         onPress={confirmarSaida}
       />
     </TelaBase>

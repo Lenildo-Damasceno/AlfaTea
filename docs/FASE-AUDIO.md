@@ -1,6 +1,10 @@
 # Fase de áudio educativo
 
-Status: planejada, ainda não implementada. Registrada em 06/10/2026.
+Status em 15/10/2026: reprodução com `expo-audio` integrada, catálogo e 36 gravações locais em WAV geradas com Microsoft Maria Desktop (pt-BR). A revisão auditiva e pedagógica está pendente. Os itens permanecem com `revisado: false` e a fala do aparelho continua sendo usada até a aprovação de cada gravação.
+
+O catálogo está em `assets/audio/catalog.json`. As gravações cobrem os nomes de A–Z, exemplos e palavras das cinco vogais. Para ativar um item, ouvir o WAV, conferir o texto, a pronúncia e o volume e somente então definir `revisado: true`. A–Z representa o **nome** da letra; não rotular esses áudios como fonemas. Sílabas e os demais exemplos continuam usando a voz do aparelho.
+
+Preparação reproduzível: `node scripts/prepare-audio.mjs` e, no Windows com a voz Maria instalada, `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/generate-audio.ps1`. O gerador preserva arquivos existentes e não aprova gravações automaticamente. O formato PCM WAV foi usado nesta primeira etapa para gerar os rascunhos sem conversores adicionais; o conjunto ocupa aproximadamente 3 MB.
 
 Implementar junto à expansão de sílabas e palavras, antes dos testes finais em dispositivo. Manter JavaScript + React Native + Expo.
 

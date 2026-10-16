@@ -1,8 +1,9 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { ProvedorConfiguracoes } from "../contexts/SettingsContext";
+import { ProvedorConfiguracoes, useConfiguracoes } from "../contexts/SettingsContext";
 import { ProvedorAuth } from "../contexts/AuthContext";
+import { ProvedorAprendizagem } from "../contexts/LearningContext";
 import { CORES } from "../constants/theme";
 
 // Define as rotas e os provedores compartilhados do aplicativo.
@@ -11,15 +12,32 @@ export default function LayoutPrincipal() {
     <SafeAreaProvider>
       <ProvedorConfiguracoes>
         <ProvedorAuth>
+          <ProvedorAprendizagem>
+            <NavegacaoPrincipal />
+          </ProvedorAprendizagem>
+        </ProvedorAuth>
+      </ProvedorConfiguracoes>
+    </SafeAreaProvider>
+  );
+}
+
+function NavegacaoPrincipal() {
+  const { reduzirMovimento } = useConfiguracoes();
+  return <>
           <StatusBar style="dark" />
           <Stack
             screenOptions={{
+              animation: reduzirMovimento ? "none" : "default",
               headerTintColor: CORES.primaria,
               contentStyle: {
                 backgroundColor: CORES.fundo,
               },
             }}
           >
+            <Stack.Screen name="forgot-password" options={{ title: "Recuperar acesso" }} />
+            <Stack.Screen name="auth/callback" options={{ title: "Confirmar e-mail" }} />
+            <Stack.Screen name="auth/reset-password" options={{ title: "Nova senha" }} />
+            <Stack.Screen name="profile" options={{ title: "Perfis de aprendizagem" }} />
             <Stack.Screen
               name="index"
               options={{
@@ -83,8 +101,5 @@ export default function LayoutPrincipal() {
               }}
             />
           </Stack>
-        </ProvedorAuth>
-      </ProvedorConfiguracoes>
-    </SafeAreaProvider>
-  );
+    </>;
 }

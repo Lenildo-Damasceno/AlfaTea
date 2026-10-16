@@ -3,6 +3,12 @@
     "name": "Alfatea",
     "slug": "alfatea",
     "version": "1.0.0",
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/2fcb4a25-67a4-4e68-ac7c-2b884d3c82bb"
+    },
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "ios": {
@@ -34,7 +40,17 @@
       ],
       "expo-notifications",
       "expo-router",
-      "expo-video"
+      "expo-video",
+      "expo-sqlite",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "enableBackgroundPlayback": false,
+          "enableBackgroundRecording": false
+        }
+      ]
     ],
     "icon": "./assets/images/branding/icone_alfatea.png",
     "scheme": "alfatea",

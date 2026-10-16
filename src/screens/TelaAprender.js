@@ -6,6 +6,7 @@ import BotaoPrincipal from "../components/PrimaryButton";
 export default function TelaAprender() {
   return (
     <TelaBase title="Vamos aprender">
+      <BotaoPrincipal title="Praticar vogais" onPress={() => router.push("/activity")} />
       {["Letras", "Sílabas", "Palavras", "Jogos"].map((modulo) => (
         <BotaoPrincipal
           key={modulo}

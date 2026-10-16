@@ -4,6 +4,8 @@ Aplicativo de apoio pedagógico em JavaScript + React Native + Expo.
 
 ## Executar
 
+Para gerar o APK Android e enviar atualizações compatíveis, consulte [APK e EAS Update](docs/EAS-UPDATE.md).
+
 - `npm install`
 - `npm start`
 - `npm run android` com emulador ou dispositivo configurado.
@@ -12,7 +14,9 @@ Aplicativo de apoio pedagógico em JavaScript + React Native + Expo.
 
 JavaScript, tema oficial, componentes nativos reutilizáveis e navegação Stack/Tabs com Expo Router em `src/app/`. Splash, Home, Sobre e configurações implementadas. As preferências usam AsyncStorage.
 
-O módulo **Aprender → Letras** apresenta as 26 letras A–Z em cartões acessíveis. Cada letra abre uma tela com maiúscula, minúscula, palavra de exemplo e navegação anterior/próxima. Funciona com conteúdo local, sem internet. As letras usam texto nativo colorido inspirado na referência visual; ainda não são os assets ilustrados individuais. Áudios, exercícios e persistência de progresso continuam pendentes. Os outros módulos e a aba Progresso permanecem em preparação.
+O módulo **Aprender → Letras** apresenta as 26 letras A–Z em cartões acessíveis, e **Sílabas** mostra as partes das palavras. A atividade **Praticar vogais** oferece cinco rodadas com três opções, dicas e novas tentativas. A aba **Progresso** registra visitas e respostas, com retomada da última tela. O progresso usa SQLite no celular e armazenamento local no navegador, separado por conta e perfil de aprendizagem. Palavras e Jogos continuam em preparação.
+
+A abertura mostra **Continuar** para contas conectadas. Nas Configurações, é possível pular o vídeo, reduzir animações e gerenciar apelidos e avatares. O login inclui recuperação de senha e prevenção de envios repetidos. A integração de áudio local está preparada com 36 gravações de rascunho; a reprodução dessas gravações depende de revisão. Consulte [Melhorias graduais](docs/MELHORIAS-GRADUAIS.md) para pendências e validação.
 
 Após a mudança de navegação, reinicie o Metro com `npx expo start --clear`.
 

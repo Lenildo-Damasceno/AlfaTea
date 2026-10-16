@@ -4,10 +4,10 @@ import { CORES } from "../constants/theme";
 // Organiza o titulo e o conteudo em uma tela com rolagem.
 export default function TelaBase({ title: titulo, children: conteudo }) {
   return (
-    <ScrollView style={estilos.tela} contentContainerStyle={estilos.conteudo}>
-      <Text accessibilityRole="header" style={estilos.titulo}>
+    <ScrollView keyboardShouldPersistTaps="handled" style={estilos.tela} contentContainerStyle={estilos.conteudo}>
+      {titulo ? <Text accessibilityRole="header" style={estilos.titulo}>
         {titulo}
-      </Text>
+      </Text> : null}
       {conteudo}
     </ScrollView>
   );

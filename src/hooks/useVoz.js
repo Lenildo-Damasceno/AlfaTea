@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 import { useFocusEffect } from "expo-router";
 import { AppState } from "react-native";
-import * as Voz from "expo-speech";
+import { pararAudio, reproduzirVoz } from "../services/audioPlayback";
 
 // Controla a fala da tela e descarta pedidos antigos após toques rápidos.
 export function useVoz(somAtivado, letra) {
@@ -12,7 +12,7 @@ export function useVoz(somAtivado, letra) {
   // Cancela a fala e invalida qualquer reprodução que ainda esteja aguardando.
   const pararVoz = useCallback(() => {
     pedidoAtual.current += 1;
-    return Voz.stop();
+    return pararAudio();
   }, []);
 
   // Para ao trocar de letra, sair da tela, desligar o som ou minimizar o app.
@@ -36,16 +36,12 @@ export function useVoz(somAtivado, letra) {
     const pedido = ++pedidoAtual.current;
     definirMensagemVoz("");
     try {
-      await Voz.stop();
+      await pararAudio();
       if (pedido !== pedidoAtual.current || !telaAtiva.current) return;
-      Voz.speak(texto, {
-        language: "pt-BR",
-        rate: 0.85,
-        onError: () => {
+      await reproduzirVoz(texto, () => {
           if (pedido === pedidoAtual.current && telaAtiva.current) {
             definirMensagemVoz("Não foi possível reproduzir a voz. Verifique a voz em português nas configurações do celular.");
           }
-        },
       });
     } catch {
       if (pedido === pedidoAtual.current && telaAtiva.current) {

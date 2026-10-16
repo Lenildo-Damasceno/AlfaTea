@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AccessibilityInfo } from "react-native";
 import * as Haptics from "expo-haptics";
 import {
   lembreteEstaAtivo,
@@ -15,12 +16,24 @@ export function ProvedorConfiguracoes({ children: conteudo }) {
   const [configuracoes, definirConfiguracoes] = useState({
     vibration: false,
     som: true,
+    reduzirMovimento: false,
+    pularAbertura: false,
   });
   const [carregado, definirCarregado] = useState(false);
   const [erro, definirErro] = useState("");
   const [notificacoes, definirNotificacoes] = useState(false);
   const [ocupado, definirOcupado] = useState(false);
   const bloqueio = useRef(false);
+  const [movimentoReduzidoSistema, definirMovimentoReduzidoSistema] = useState(false);
+
+  useEffect(() => {
+    let ativo = true;
+    AccessibilityInfo.isReduceMotionEnabled().then((valor) => {
+      if (ativo) definirMovimentoReduzidoSistema(valor);
+    }).catch(() => {});
+    const inscricao = AccessibilityInfo.addEventListener("reduceMotionChanged", definirMovimentoReduzidoSistema);
+    return () => { ativo = false; inscricao.remove(); };
+  }, []);
 
   // Recupera as preferências ao abrir e evita atualizar um componente desmontado.
   useEffect(() => {
@@ -32,6 +45,8 @@ export function ProvedorConfiguracoes({ children: conteudo }) {
           definirConfiguracoes({
             vibration: preferenciasSalvas.vibration === true,
             som: preferenciasSalvas.som !== false,
+            reduzirMovimento: preferenciasSalvas.reduzirMovimento === true,
+            pularAbertura: preferenciasSalvas.pularAbertura === true,
           });
       })
       .catch(() => {
@@ -69,11 +84,16 @@ export function ProvedorConfiguracoes({ children: conteudo }) {
 
   // Guarda a preferência de som sem alterar a preferência de vibração.
   async function atualizarSom(valor) {
+    return atualizarPreferencia("som", valor);
+  }
+
+  async function atualizarPreferencia(chave, valor) {
+    if (!["som", "reduzirMovimento", "pularAbertura"].includes(chave)) return;
     if (bloqueio.current || !carregado) return;
     bloqueio.current = true;
     definirOcupado(true);
     try {
-      const proximasConfiguracoes = { ...configuracoes, som: valor };
+      const proximasConfiguracoes = { ...configuracoes, [chave]: valor === true };
       await AsyncStorage.setItem(CHAVE_CONFIGURACOES, JSON.stringify(proximasConfiguracoes));
       definirConfiguracoes(proximasConfiguracoes);
       definirErro("");
@@ -119,6 +139,9 @@ export function ProvedorConfiguracoes({ children: conteudo }) {
         notificacoes,
         atualizarVibracao,
         atualizarSom,
+        atualizarPreferencia,
+        reduzirMovimento: configuracoes.reduzirMovimento || movimentoReduzidoSistema,
+        movimentoReduzidoSistema,
         atualizarLembrete,
         consultarLembrete,
         emitirFeedback,
